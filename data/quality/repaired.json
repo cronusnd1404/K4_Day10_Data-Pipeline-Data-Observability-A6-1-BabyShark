@@ -1,0 +1,11 @@
+{
+  "report_name": "repaired",
+  "passed": true,
+  "total_rows": 24,
+  "paper_id_nulls": 0,
+  "paper_id_duplicates": 0,
+  "title_nulls": 0,
+  "short_summaries": 0,
+  "stale_rows": 0,
+  "freshness_threshold_days": 180
+}

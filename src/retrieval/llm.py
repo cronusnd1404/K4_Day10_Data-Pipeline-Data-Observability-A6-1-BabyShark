@@ -1,9 +1,17 @@
 from __future__ import annotations
 
+from pathlib import Path
+import sys
+
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
+
+# Tự động thêm 'src' vào sys.path nếu chưa có
+_src_dir = Path(__file__).resolve().parent.parent
+if str(_src_dir) not in sys.path:
+    sys.path.insert(0, str(_src_dir))
 
 from core.config import Settings, normalized_provider, require_llm_credentials
 
@@ -51,3 +59,14 @@ def build_llm(settings: Settings, temperature: float = 0.0):
             temperature=temperature,
         )
     raise RuntimeError(f"Unsupported LLM provider: {settings.llm_provider}")
+
+
+if __name__ == "__main__":
+    from core.config import load_settings
+
+    settings = load_settings()
+    print(f"Testing LLM provider: '{settings.llm_provider}' | model: '{settings.model_name}'")
+    llm = build_llm(settings)
+    res = llm.invoke("Hi! Please confirm you are operational in 1 short sentence.")
+    print("LLM Response:", res.content)
+

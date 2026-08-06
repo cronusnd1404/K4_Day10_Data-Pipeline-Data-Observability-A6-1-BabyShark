@@ -2,7 +2,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+import sys
 from typing import Any
+
+# Tự động thêm 'src' vào sys.path nếu chưa có
+_src_dir = Path(__file__).resolve().parent.parent
+if str(_src_dir) not in sys.path:
+    sys.path.insert(0, str(_src_dir))
 
 import chromadb
 import pandas as pd
@@ -172,3 +178,25 @@ class LocalEmbeddingIndex:
         if needle in self.documents_by_title:
             return self.documents_by_title[needle]
         return None
+
+
+if __name__ == "__main__":
+    from core.config import load_settings
+
+    settings = load_settings()
+    clean_json_path = settings.paths.clean_json
+
+    if not clean_json_path.exists():
+        print(f"File {clean_json_path} chưa tồn tại. Hãy chạy cleaning.py trước!")
+    else:
+        df = pd.read_json(clean_json_path)
+        print(f"Building ChromaDB index in '{settings.paths.chroma_dir}'...")
+        index = LocalEmbeddingIndex.build(df, settings)
+        print(f"Index created successfully with {len(index.documents)} documents!")
+        print(f"Manifest written to: {settings.paths.embeddings_json}")
+
+        search_results = index.search("agentic retrieval augmented generation", top_k=2)
+        print(f"\nTop 2 Search Results for query 'agentic retrieval augmented generation':")
+        for i, res in enumerate(search_results, 1):
+            print(f"  [{i}] {res.title} (score: {res.score:.4f}, DOI: {res.paper_id})")
+

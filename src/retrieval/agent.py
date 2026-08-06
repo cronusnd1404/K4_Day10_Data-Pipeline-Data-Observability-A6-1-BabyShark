@@ -1,6 +1,13 @@
 from __future__ import annotations
 
+from pathlib import Path
+import sys
 from typing import Any
+
+# Tự động thêm 'src' vào sys.path nếu chưa có
+_src_dir = Path(__file__).resolve().parent.parent
+if str(_src_dir) not in sys.path:
+    sys.path.insert(0, str(_src_dir))
 
 from langchain.agents import create_agent
 from langchain.tools import tool
@@ -57,3 +64,28 @@ def run_agent_question(agent: Any, question: str) -> str:
         return ""
     final_message = messages[-1]
     return getattr(final_message, "content", str(final_message))
+
+
+if __name__ == "__main__":
+    import pandas as pd
+    from core.config import load_settings
+
+    settings = load_settings()
+    clean_json_path = settings.paths.clean_json
+
+    if not clean_json_path.exists():
+        print(f"File {clean_json_path} chưa tồn tại. Hãy chạy cleaning.py trước!")
+    else:
+        df = pd.read_json(clean_json_path)
+        print("Loading ChromaDB index...")
+        index = LocalEmbeddingIndex.build(df, settings)
+        print(f"Index built with {len(index.documents)} documents.")
+
+        print(f"Initializing RAG Agent with LLM provider '{settings.llm_provider}' ({settings.model_name})...")
+        agent = build_agent(settings, index)
+
+        q = "What is the SafeRAG paper about?"
+        print(f"\nUser Question: {q}")
+        ans = run_agent_question(agent, q)
+        print(f"Agent Answer :\n{ans}")
+
