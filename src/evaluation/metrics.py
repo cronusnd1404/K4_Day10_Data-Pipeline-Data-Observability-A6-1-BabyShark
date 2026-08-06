@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from statistics import mean
 import os
 import sys
+import time
 import types
 from typing import Any
 
@@ -110,7 +111,10 @@ def evaluate_pipeline(
     test_set = read_json(test_set_path)
     answers: list[dict[str, Any]] = []
 
-    for item in test_set:
+    for index_item, item in enumerate(test_set):
+        if index_item > 0:
+            time.sleep(2.5)  # Tránh Rate Limit 15 RPM của Gemini Free Tier
+
         result = answer_question(item["question"], settings=settings, index=index)
         judge = _judge_answer(settings, item["question"], item["ground_truth"], result.answer)
         retrieval_hit = any(doc_id in item["ground_truth_doc_ids"] for doc_id in result.retrieved_doc_ids)
