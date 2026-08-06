@@ -1,9 +1,15 @@
 from __future__ import annotations
 
 from pathlib import Path
+import sys
 from typing import Any
 
 import pandas as pd
+
+# Tự động thêm 'src' vào sys.path nếu chưa có để cho phép chạy script trực tiếp
+_src_dir = Path(__file__).resolve().parent.parent
+if str(_src_dir) not in sys.path:
+    sys.path.insert(0, str(_src_dir))
 
 from core.utils import first_sentence, write_json
 
@@ -79,3 +85,28 @@ def build_test_set(df: pd.DataFrame, output_path) -> list[dict[str, Any]]:
 
     write_json(Path(output_path), test_set)
     return test_set
+
+
+if __name__ == "__main__":
+    import logging
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+    from core.config import load_settings
+
+    settings = load_settings()
+    clean_json_path = settings.paths.clean_json
+    eval_testset_path = settings.paths.eval_testset
+
+    if not clean_json_path.exists():
+        print(f"File {clean_json_path} chưa tồn tại. Hãy chạy cleaning.py trước!")
+    else:
+        df = pd.read_json(clean_json_path)
+        test_set = build_test_set(df, eval_testset_path)
+        print(f"\nSuccessfully built test set with {len(test_set)} questions → {eval_testset_path}")
+        if test_set:
+            print("\nSample Question 1:")
+            print("  ID          :", test_set[0]["id"])
+            print("  Type        :", test_set[0]["question_type"])
+            print("  Question    :", test_set[0]["question"])
+            print("  Ground Truth:", test_set[0]["ground_truth"])
+            print("  Doc IDs     :", test_set[0]["ground_truth_doc_ids"])
+

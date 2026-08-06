@@ -1,5 +1,13 @@
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
+# Tự động thêm 'src' vào sys.path nếu chưa có để cho phép chạy script trực tiếp
+_src_dir = Path(__file__).resolve().parent.parent
+if str(_src_dir) not in sys.path:
+    sys.path.insert(0, str(_src_dir))
+
 
 def main() -> None:
     """TODO(student): xay dung baseline pipeline end-to-end.

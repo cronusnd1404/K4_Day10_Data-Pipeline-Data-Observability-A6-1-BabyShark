@@ -2,10 +2,16 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+import sys
 from typing import Any
 
 import chromadb
 import pandas as pd
+
+# Tự động thêm 'src' vào sys.path nếu chưa có để cho phép chạy script trực tiếp
+_src_dir = Path(__file__).resolve().parent.parent
+if str(_src_dir) not in sys.path:
+    sys.path.insert(0, str(_src_dir))
 
 from core.config import Settings
 from core.utils import read_json, safe_slug, write_json
