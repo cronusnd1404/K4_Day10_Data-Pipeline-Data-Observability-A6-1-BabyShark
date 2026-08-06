@@ -1,7 +1,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 import re
+import sys
+
+# Tự động thêm 'src' vào sys.path nếu chưa có
+_src_dir = Path(__file__).resolve().parent.parent
+if str(_src_dir) not in sys.path:
+    sys.path.insert(0, str(_src_dir))
 
 from core.config import Settings
 from core.utils import first_sentence
@@ -54,3 +61,26 @@ def answer_question(question: str, settings: Settings, index: LocalEmbeddingInde
         retrieved_contexts=[item.content for item in retrieved],
         retrieved_titles=[item.title for item in retrieved],
     )
+
+
+if __name__ == "__main__":
+    import pandas as pd
+    from core.config import load_settings
+
+    settings = load_settings()
+    clean_json_path = settings.paths.clean_json
+
+    if not clean_json_path.exists():
+        print(f"File {clean_json_path} chưa tồn tại. Hãy chạy cleaning.py trước!")
+    else:
+        df = pd.read_json(clean_json_path)
+        print("Building ChromaDB vector index...")
+        index = LocalEmbeddingIndex.build(df, settings)
+        print(f"Index built with {len(index.documents)} documents.")
+
+        question = "What is the paper 'SafeRAG: A Large-Language-Model-Based Multistage Retrieval-Augmented Framework for Oil and Gas Safety Report Generation' about?"
+        result = answer_question(question, settings, index)
+        print(f"\nQuestion: {question}")
+        print(f"Answer  : {result.answer}")
+        print(f"Retrieved Doc IDs: {result.retrieved_doc_ids}")
+
