@@ -6,8 +6,8 @@
 |---|---|---|---|
 | **Retrieval Hit Rate** | 95.83% | 100.00% | 95.83% |
 | **Mean Token F1** | 96.36% | 71.13% | 96.36% |
-| **Judge Accuracy** | 87.50% | 58.33% | 87.50% |
-| **Mean Judge Score** | 4.54 | 3.50 | 4.54 |
+| **Judge Accuracy** | 87.50% | 70.83% | 87.50% |
+| **Mean Judge Score** | 4.50 | 3.75 | 4.50 |
 
 ## 2. Data Observability & Quality Impact
 

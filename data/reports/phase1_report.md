@@ -12,7 +12,7 @@
 - **Retrieval Hit Rate**: `95.83%`
 - **Mean Token F1**: `96.36%`
 - **Judge Accuracy**: `87.50%`
-- **Mean Judge Score**: `4.54 / 5.0`
+- **Mean Judge Score**: `4.50 / 5.0`
 
 ## 3. Data Quality & Freshness
 - **Quality Checks Passed**: `PASSED`

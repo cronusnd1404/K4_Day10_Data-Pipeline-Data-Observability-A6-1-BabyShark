@@ -1,7 +1,7 @@
 {
   "backend": "chroma",
   "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
-  "persist_path": "C:\\Users\\Datto\\Downloads\\code\\AI20K\\K4_Day10_Data-Pipeline-Data-Observability-A6-1-BabyShark\\data\\chroma",
+  "persist_path": "D:\\study\\AI20K\\LAB\\K4_Day10_Data-Pipeline-Data-Observability-A6-1-BabyShark\\data\\chroma",
   "collection_name": "papers-baseline",
   "documents": [
     {
